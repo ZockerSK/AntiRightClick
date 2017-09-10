@@ -3,7 +3,6 @@ package ch.pineirohosting.arc.listener;
 import ch.pineirohosting.arc.AntiRightClick;
 import ch.pineirohosting.arc.events.AntiRightClickEvent;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,17 +17,12 @@ public class AntiRightClickListener implements Listener {
 
     @EventHandler
     public void onDetection(final AntiRightClickEvent event) {
-        Bukkit.getScheduler().runTask(AntiRightClick.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                event.getPlayer().kickPlayer(kickMessage);
-            }
-        });
+        event.getPlayer().kickPlayer(kickMessage);
     }
 
     private String generateKickMessage() {
-        return ChatColor.translateAlternateColorCodes('&', StringUtils.join(AntiRightClick.getInstance().getConfig()
-                .getList("autokick.message").iterator(), "\n"));
+        return ChatColor.translateAlternateColorCodes('&', StringUtils.join(AntiRightClick.getInstance()
+                .getConfig().getList("autokick.message").iterator(), "\n"));
     }
 
 }

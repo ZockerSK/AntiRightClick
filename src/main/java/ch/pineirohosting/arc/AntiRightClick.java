@@ -60,7 +60,7 @@ public class AntiRightClick extends JavaPlugin {
         this.getServer().getConsoleSender().sendMessage(
                 this.prefix + "Plugin by GalaxyHDm & Zocker_SK successfully loaded!");
         this.getServer().getConsoleSender().sendMessage(
-                this.prefix + "Please visit for more information: link to github...");
+                this.prefix + "Please visit for more information: https://github.com/ZockerSK/AntiRightClick");
 
         this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
             @Override

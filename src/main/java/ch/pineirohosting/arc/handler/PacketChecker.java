@@ -5,20 +5,31 @@ import ch.pineirohosting.arc.events.AntiRightClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class PacketChecker {
+class PacketChecker {
 
-    public static int checkPacket(final String packetName, final Player player, int counter) {
+    static CheckResult checkPacket(final String packetName, final Player player, int counter, final String lastPacket) {
         if (player.isDead())
-            return 0;
+            return new CheckResult(counter, packetName);
         if (AntiRightClick.getInstance().getPacketsToCheck().contains(packetName)) {
             if (counter != 0)
                 counter = 0;
-        } else if (packetName.equalsIgnoreCase("PacketPlayInKeepAlive")) {
+        } else if (packetName.equalsIgnoreCase("PacketPlayInKeepAlive") &&
+                !lastPacket.equalsIgnoreCase("PacketPlayInSettings")) {
             counter++;
-            if (counter == AntiRightClick.getInstance().getCounter())
-                Bukkit.getPluginManager().callEvent(new AntiRightClickEvent(player, counter));
+            final double counterAmount = counter / AntiRightClick.getInstance().getCounter();
+            if ((counterAmount == Math.floor(counterAmount)) && !Double.isInfinite(counterAmount)
+                    && counterAmount != 0) {
+                Bukkit.getScheduler().runTask(AntiRightClick.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        Bukkit.getPluginManager().callEvent(new AntiRightClickEvent(player, (int) counterAmount));
+                    }
+                });
+            }
         }
-        return counter;
+        return new CheckResult(counter,
+                (packetName.equalsIgnoreCase("PacketPlayInKeepAlive") &&
+                        lastPacket.equalsIgnoreCase("PacketPlayInSettings") ? lastPacket : packetName));
     }
 
 }

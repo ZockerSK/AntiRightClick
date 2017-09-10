@@ -6,7 +6,7 @@
 
     <groupId>ch.pineirohosting.minecraft</groupId>
     <artifactId>anti-right-click</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <build>
         <plugins>
             <plugin>

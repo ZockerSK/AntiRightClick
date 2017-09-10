@@ -86,7 +86,7 @@ public class Stats {
         final String osVersion = System.getProperty("os.version");
         final String javaVersion = System.getProperty("java.version");
         final int coreCount = Runtime.getRuntime().availableProcessors();
-        final long maxMemory = Integer.parseInt(attribute.toString());
+        final long maxMemory = Long.parseLong(attribute.toString());
         final String cpuName = OSUtil.getProcessorName();
         final int cpuMHz = OSUtil.getCPUMHz();
 

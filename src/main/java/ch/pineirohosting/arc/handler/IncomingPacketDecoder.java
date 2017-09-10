@@ -11,6 +11,7 @@ public class IncomingPacketDecoder extends MessageToMessageDecoder<Object> {
 
     private final Player player;
     private int counter;
+    private String lastPacket = "";
 
     public IncomingPacketDecoder(final Player player) {
         this.player = player;
@@ -19,8 +20,12 @@ public class IncomingPacketDecoder extends MessageToMessageDecoder<Object> {
     @Override
     protected void decode(final ChannelHandlerContext channelHandlerContext, final Object packet,
                           final List<Object> list) throws Exception {
-        if (packet.getClass().getCanonicalName().startsWith("net.minecraft.server." + NMSUtil.VERSION + ".Packet"))
-            counter = PacketChecker.checkPacket(packet.getClass().getSimpleName(), this.player, this.counter);
+        if (packet.getClass().getCanonicalName().startsWith("net.minecraft.server." + NMSUtil.VERSION + ".Packet")) {
+            final CheckResult result = PacketChecker.checkPacket(packet.getClass().getSimpleName(),
+                    this.player, this.counter, this.lastPacket);
+            this.counter = result.getCounter();
+            this.lastPacket = result.getLastPacket();
+        }
         list.add(packet);
     }
 }
