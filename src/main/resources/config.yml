@@ -1,0 +1,17 @@
+# A KeepAlive-Packet will be send every two seconds, so if you provide 1, then the player will be kicked after
+# 2 seconds, if he is using this bug.
+# If you provide 2, he will be kicked after four seconds and so on...
+# ______________________________________________________________________________________________________________
+#
+# Stats - we will only submit CPU name, speed and core count, OS version, name and arch, java version (keep it updated!)
+# and your maximal ram
+
+counter: 3
+autokick:
+ enable: true
+ message:
+  - "&cYou have been kicked by &aAntiRightClick"
+  - ""
+  - "&cDon't do cheating anymore!"
+stats:
+ enable: true
