@@ -15,4 +15,7 @@ autokick:
   - "&cDon't do cheating anymore!"
 stats:
  enable: true
-autoupdate: true
+autoupdate:
+  enable: true
+  reloadAfterUpdate: true
+  shutdownAfterUpdate: false

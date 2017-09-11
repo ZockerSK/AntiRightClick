@@ -13,12 +13,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.jar.JarFile;
 
 public class AutoUpdater {
 
     private String newVersion;
 
-    public void checkForUpdate() throws IOException {
+    public void checkForUpdate() throws IOException, URISyntaxException {
         final int localVersion = Integer.valueOf(AntiRightClick.getInstance().getDescription().getVersion()
                 .replaceAll("\\.", ""));
         final HttpURLConnection connection = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php")
@@ -37,9 +38,11 @@ public class AutoUpdater {
         }
     }
 
-    private void update() throws IOException {
-        if (!AntiRightClick.getInstance().getConfig().contains("autoUpdate")) {
-            AntiRightClick.getInstance().getConfig().set("autoUpdate", true);
+    private void update() throws IOException, URISyntaxException {
+        if (!AntiRightClick.getInstance().getConfig().contains("autoUpdate.enable")) {
+            AntiRightClick.getInstance().getConfig().set("autoUpdate.enable", true);
+            AntiRightClick.getInstance().getConfig().set("autoUpdate.reloadAfterReload", true);
+            AntiRightClick.getInstance().getConfig().set("autoUpdate.shutdownAfterReload", false);
             AntiRightClick.getInstance().getConfig().save(Paths.get("plugins/AntiRightClick/config.yml").toFile());
         }
         System.out.println(AntiRightClick.getInstance().getPrefix() + "An update was found!");
@@ -54,23 +57,25 @@ public class AutoUpdater {
                 newPath.toFile().mkdirs();
 
             Files.copy(connection.getInputStream(), newPath);
-            new Thread(new Runnable() {
+            try (final JarFile jarFile = new JarFile(newPath.toFile())) {
+                // check if jar file is corrupt
+            }
+            final Path jarPath = Paths.get(AntiRightClick.getInstance().getClass().getProtectionDomain()
+                    .getCodeSource().getLocation().toURI());
+            Files.delete(jarPath);
+            Files.copy(jarPath, jarPath);
+            Bukkit.getScheduler().runTask(AntiRightClick.getInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    final Path tempPath = newPath;
-                    try {
-                        Thread.sleep(3000);
-                        Path jarPath = Paths.get(AntiRightClick.getInstance().getClass().getProtectionDomain()
-                                .getCodeSource().getLocation().toURI());
-                        Files.delete(jarPath);
-                        Files.copy(tempPath, jarPath);
-                        Bukkit.getPluginManager().enablePlugin(AntiRightClick.getInstance());
-                    } catch (IOException | URISyntaxException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    if (AntiRightClick.getInstance().getConfig().getBoolean("autoUpdate.reloadAfterUpdate"))
+                        Bukkit.reload();
+                    else if (AntiRightClick.getInstance().getConfig().getBoolean("autoUpdate.shutdownAfterUpdate"))
+                        Bukkit.shutdown();
+                    else
+                        Bukkit.getConsoleSender().sendMessage("§a" + AntiRightClick.getInstance().getPrefix() +
+                                "The plugin was updated.. You have to manually restart this server.");
                 }
-            }).start();
-            Bukkit.getPluginManager().disablePlugin(AntiRightClick.getInstance());
+            });
         }
     }
 }
