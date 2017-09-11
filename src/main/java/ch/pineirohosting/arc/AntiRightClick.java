@@ -27,7 +27,7 @@ public class AntiRightClick extends JavaPlugin {
     private final int counter = this.getConfig().getInt("counter");
     private final List<String> packetsToCheck = Arrays.asList("PacketPlayInFlying", // 1.8.x
             "PacketPlayInPosition", "PacketPlayInPositionLook"); // 1.9.x - 1.12.x
-    private final Map<Player, Object> playersChannelHandler = new HashMap<>();
+    private final Map<Player, IncomingPacketDecoder> playersChannelHandler = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -53,8 +53,7 @@ public class AntiRightClick extends JavaPlugin {
 
         for (Player player : this.getServer().getOnlinePlayers()) {
            NMSUtil.getPlayersNettyChannel(player).pipeline()
-                    .addAfter("decoder", "arc",
-                            (IncomingPacketDecoder) this.playersChannelHandler.get(player));
+                    .addAfter("decoder", "arc", this.playersChannelHandler.get(player));
         }
 
         this.getServer().getConsoleSender().sendMessage(
@@ -80,8 +79,7 @@ public class AntiRightClick extends JavaPlugin {
     @Override
     public void onDisable() {
         for (Player player : this.getServer().getOnlinePlayers()) {
-            NMSUtil.getPlayersNettyChannel(player).pipeline()
-                    .remove((IncomingPacketDecoder) this.playersChannelHandler.get(player));
+            NMSUtil.getPlayersNettyChannel(player).pipeline().remove(this.playersChannelHandler.get(player));
         }
     }
 
@@ -101,7 +99,7 @@ public class AntiRightClick extends JavaPlugin {
         return prefix;
     }
 
-    public Map<Player, Object> getPlayersChannelHandler() {
+    public Map<Player, IncomingPacketDecoder> getPlayersChannelHandler() {
         return playersChannelHandler;
     }
 }

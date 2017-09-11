@@ -11,7 +11,7 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onJoin(final PlayerJoinEvent event) {
-        IncomingPacketDecoder decoder = new IncomingPacketDecoder(event.getPlayer());
+        final IncomingPacketDecoder decoder = new IncomingPacketDecoder(event.getPlayer());
         NMSUtil.getPlayersNettyChannel(event.getPlayer()).pipeline().addAfter("decoder", "arc", decoder);
         AntiRightClick.getInstance().getPlayersChannelHandler().put(event.getPlayer(), decoder);
     }

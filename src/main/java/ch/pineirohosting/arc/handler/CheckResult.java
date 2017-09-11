@@ -1,20 +1,20 @@
 package ch.pineirohosting.arc.handler;
 
-public class CheckResult {
+class CheckResult {
 
     private final int counter;
     private final String lastPacket;
 
-    public CheckResult(int counter, String lastPacket) {
+    CheckResult(int counter, String lastPacket) {
         this.counter = counter;
         this.lastPacket = lastPacket;
     }
 
-    public int getCounter() {
+    int getCounter() {
         return counter;
     }
 
-    public String getLastPacket() {
+    String getLastPacket() {
         return lastPacket;
     }
 }
