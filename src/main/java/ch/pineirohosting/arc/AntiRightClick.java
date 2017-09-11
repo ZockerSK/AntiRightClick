@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.management.*;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -80,7 +81,7 @@ public class AntiRightClick extends JavaPlugin {
             public void run() {
                 try {
                     new AutoUpdater().checkForUpdate();
-                } catch (IOException e) {
+                } catch (IOException | URISyntaxException e) {
                     e.printStackTrace();
                 }
             }
