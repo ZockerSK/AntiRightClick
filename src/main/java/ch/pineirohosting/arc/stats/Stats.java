@@ -83,8 +83,8 @@ public class Stats {
         if (osArch.equalsIgnoreCase("x86_64"))
             osArch = "amd64";
 
-        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        Object attribute = mBeanServer.getAttribute(new ObjectName("java.lang", "type",
+        final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        final Object attribute = mBeanServer.getAttribute(new ObjectName("java.lang", "type",
                 "OperatingSystem"), "TotalPhysicalMemorySize");
 
         final String osVersion = System.getProperty("os.version");

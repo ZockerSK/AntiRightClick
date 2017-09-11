@@ -38,7 +38,7 @@ public class OSUtil {
             try (final FileReader reader = new FileReader("/proc/cpuinfo")) {
                 try (final Scanner scanner = new Scanner(reader)) {
                     while (scanner.hasNextLine()) {
-                        String line = scanner.nextLine();
+                        final String line = scanner.nextLine();
                         if (line.startsWith("model name")) {
                             return line.split(":")[1].trim();
                         }

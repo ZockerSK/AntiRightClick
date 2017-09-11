@@ -5,7 +5,7 @@ class CheckResult {
     private final int counter;
     private final String lastPacket;
 
-    CheckResult(int counter, String lastPacket) {
+    CheckResult(final int counter, final String lastPacket) {
         this.counter = counter;
         this.lastPacket = lastPacket;
     }
