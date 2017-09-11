@@ -4,6 +4,7 @@ import ch.pineirohosting.arc.handler.IncomingPacketDecoder;
 import ch.pineirohosting.arc.listener.AntiRightClickListener;
 import ch.pineirohosting.arc.listener.PlayerJoinListener;
 import ch.pineirohosting.arc.stats.Stats;
+import ch.pineirohosting.arc.util.AutoUpdater;
 import ch.pineirohosting.arc.util.NMSUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -52,7 +53,7 @@ public class AntiRightClick extends JavaPlugin {
         }
 
         for (Player player : this.getServer().getOnlinePlayers()) {
-           NMSUtil.getPlayersNettyChannel(player).pipeline()
+            NMSUtil.getPlayersNettyChannel(player).pipeline()
                     .addAfter("decoder", "arc", this.playersChannelHandler.get(player));
         }
 
@@ -71,6 +72,16 @@ public class AntiRightClick extends JavaPlugin {
                         System.err.println(prefix + "An error occurred while submitting stats...");
                         e.printStackTrace();
                     }
+                }
+            }
+        });
+        this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    new AutoUpdater().checkForUpdate();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });

@@ -10,9 +10,13 @@ import javax.management.*;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -131,7 +135,7 @@ public class Stats {
             if (notFound)
                 AntiRightClick.getInstance().getConfig().set("stats.uuid", uuid);
             AntiRightClick.getInstance().getConfig().set("stats.timestamp", response.get("timestamp").getAsLong());
-            AntiRightClick.getInstance().getConfig().save(new File("plugins/AntiRightClick/config.yml"));
+            AntiRightClick.getInstance().getConfig().save(Paths.get("plugins/AntiRightClick/config.yml").toFile());
         }
 
 
