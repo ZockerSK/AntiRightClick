@@ -30,7 +30,6 @@ public class AutoUpdater {
                 "&resource=" + resourceID).getBytes("UTF-8"));
         try (final InputStreamReader reader = new InputStreamReader(connection.getInputStream())) {
             this.newVersion = CharStreams.toString(reader);
-            System.out.println(this.newVersion);
             final int onlineVersion = Integer.parseInt(this.newVersion.replaceAll("\\.", ""));
             if (onlineVersion > localVersion) {
                 update();
