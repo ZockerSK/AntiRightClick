@@ -48,7 +48,7 @@ public class AutoUpdater {
         System.out.println(AntiRightClick.getInstance().getPrefix() + "An update was found!");
         if (AntiRightClick.getInstance().getConfig().getBoolean("autoUpdate")) {
             HttpsURLConnection connection = (HttpsURLConnection) new URL(String.format("https://github.com/ZockerSK/" +
-                            "AntiRightClick/releases/download/v.%s/anti-right-click-%s.jar", this.newVersion,
+                            "AntiRightClick/releases/download/v%s/anti-right-click-%s.jar", this.newVersion,
                     this.newVersion)).openConnection();
             final Path newPath = Paths.get("update/AntiRightClick.jar");
             if (Files.exists(newPath))
