@@ -63,7 +63,7 @@ public class AutoUpdater {
             final Path jarPath = Paths.get(AntiRightClick.getInstance().getClass().getProtectionDomain()
                     .getCodeSource().getLocation().toURI());
             Files.delete(jarPath);
-            Files.copy(jarPath, jarPath);
+            Files.copy(newPath, jarPath);
             Bukkit.getScheduler().runTask(AntiRightClick.getInstance(), new Runnable() {
                 @Override
                 public void run() {
