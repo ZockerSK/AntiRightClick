@@ -41,8 +41,3 @@ public class AntiRightClickListener implements Listener {
  This plugin was successfully tested with ViaVersion.
  
  Please don't hestitate to open an issue, in case of an error
- 
- **Note**
- 
- This plugin will kick players, which are changing their shaders - a bugfix will come soon.
- We are looking forward hearing suggestions to this bug 

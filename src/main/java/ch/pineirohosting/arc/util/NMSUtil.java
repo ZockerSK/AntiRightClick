@@ -30,7 +30,8 @@ public class NMSUtil {
             final Class<?> networkManagerClass = Class.forName("net.minecraft.server." + VERSION + ".NetworkManager");
             CHANNEL_FIELD = networkManagerClass.getField("channel");
         } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException e) {
-          AntiRightClick.getInstance().getLogger().log(Level.SEVERE, "There was an error while initializing the NMS classes!", e);
+            AntiRightClick.getInstance().getLogger().log(Level.SEVERE,
+                    "There was an error while initializing the NMS classes!", e);
         }
     }
 
@@ -40,7 +41,7 @@ public class NMSUtil {
             final Object playerConnection = PLAYER_CONNECTION_FIELD.get(entityPlayer);
             final Object networkManger = NETWORK_MANAGER_FIELD.get(playerConnection);
             return (Channel) CHANNEL_FIELD.get(networkManger);
-        } catch (final  IllegalAccessException | InvocationTargetException e) {
+        } catch (final IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;

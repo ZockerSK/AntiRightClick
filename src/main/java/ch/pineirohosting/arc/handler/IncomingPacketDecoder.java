@@ -3,7 +3,6 @@ package ch.pineirohosting.arc.handler;
 import ch.pineirohosting.arc.util.NMSUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
-
 import org.bukkit.entity.Player;
 
 import java.util.List;
