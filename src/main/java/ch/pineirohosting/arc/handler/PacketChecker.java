@@ -3,6 +3,8 @@ package ch.pineirohosting.arc.handler;
 import ch.pineirohosting.arc.AntiRightClick;
 import ch.pineirohosting.arc.events.AntiRightClickEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Pattern;
@@ -14,7 +16,7 @@ class PacketChecker {
             Pattern.compile("PacketPlayInKeepAlive", Pattern.CASE_INSENSITIVE);
 
     static CheckResult checkPacket(final String packetName, final Player player, int counter, final String lastPacket) {
-        if (player.isDead() || player.isOnGround())
+        if (player.isDead() || player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR)
             return new CheckResult(counter, packetName);
         if (AntiRightClick.getInstance().getPacketsToCheck().contains(packetName)) {
             if (counter != 0)
