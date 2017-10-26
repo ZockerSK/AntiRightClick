@@ -63,19 +63,22 @@ public class AntiRightClick extends JavaPlugin {
         this.getServer().getConsoleSender().sendMessage(
                 this.prefix + "Please visit for more information: https://github.com/ZockerSK/AntiRightClick");
 
-        this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 if (getConfig().getBoolean("stats.enable")) {
                     try {
                         new Stats().send();
-                    } catch (IOException | KeyStoreException | CertificateException | KeyManagementException | NoSuchAlgorithmException | ReflectionException | AttributeNotFoundException | InstanceNotFoundException | MalformedObjectNameException | MBeanException e) {
+                    } catch (IOException | KeyStoreException | CertificateException | KeyManagementException
+                            | NoSuchAlgorithmException | ReflectionException | AttributeNotFoundException
+                            | InstanceNotFoundException | MalformedObjectNameException | MBeanException
+                            | InterruptedException e) {
                         System.err.println(prefix + "An error occurred while submitting stats...");
                         e.printStackTrace();
                     }
                 }
             }
-        });
+        }).start();
         this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
             @Override
             public void run() {

@@ -74,7 +74,7 @@ public class Stats {
     }
 
     public void send() throws IOException, MalformedObjectNameException, AttributeNotFoundException, MBeanException,
-            ReflectionException, InstanceNotFoundException {
+            ReflectionException, InstanceNotFoundException, InterruptedException {
         if (!send)
             return;
 
@@ -110,10 +110,15 @@ public class Stats {
         stats.addProperty("uuid", (notFound ? "not-found" : AntiRightClick.getInstance().getConfig()
                 .getString("stats.uuid")));
 
+        this.createAndHandleConnection(stats, notFound);
+    }
+
+    private void createAndHandleConnection(final JsonObject stats, final boolean notFound)
+            throws IOException, InterruptedException {
         final HttpsURLConnection connection = (HttpsURLConnection)
                 new URL("https://arc.zockersk.ovh/update-stats").openConnection();
         if (context != null)
-            connection.setSSLSocketFactory(connection.getSSLSocketFactory());
+            connection.setSSLSocketFactory(context.getSocketFactory());
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
@@ -125,20 +130,24 @@ public class Stats {
 
         if (connection.getResponseCode() == 500)
             throw new IllegalStateException("Stats server returned 500.. An error is not cool...");
-
-        try (final InputStreamReader reader = new InputStreamReader(
-                (connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream()))) {
-            final JsonObject response = (JsonObject) new JsonParser().parse(reader);
-            final String uuid = response.get("uuid").getAsString();
-            if (uuid.trim().isEmpty())
-                throw new IllegalArgumentException("UUID is invalid! Did you change it?");
-            if (notFound)
-                AntiRightClick.getInstance().getConfig().set("stats.uuid", uuid);
-            AntiRightClick.getInstance().getConfig().set("stats.timestamp", response.get("timestamp").getAsLong());
-            AntiRightClick.getInstance().getConfig().save(Paths.get("plugins/AntiRightClick/config.yml").toFile());
+        else if (connection.getResponseCode() == 429) {
+            System.out.println(AntiRightClick.getInstance().getPrefix() +
+                    "Got 429 as response code.. retrying in approx. one minute...");
+            Thread.sleep(61500);
+            this.createAndHandleConnection(stats, notFound);
+        } else {
+            try (final InputStreamReader reader = new InputStreamReader(
+                    (connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream()))) {
+                final JsonObject response = (JsonObject) new JsonParser().parse(reader);
+                final String uuid = response.get("uuid").getAsString();
+                if (uuid.trim().isEmpty())
+                    throw new IllegalArgumentException("UUID is invalid! Did you change it?");
+                if (notFound)
+                    AntiRightClick.getInstance().getConfig().set("stats.uuid", uuid);
+                AntiRightClick.getInstance().getConfig().set("stats.timestamp", response.get("timestamp").getAsLong());
+                AntiRightClick.getInstance().getConfig().save(Paths.get("plugins/AntiRightClick/config.yml").toFile());
+            }
         }
-
-
     }
 
 }
